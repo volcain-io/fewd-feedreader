@@ -23,7 +23,6 @@ $(function() {
             expect(allFeeds.length).not.toBe(0);
         });
 
-
         /* 2. Test:
          * It ensures that each allFeeds object has a URL defined
          * and that the URL is not empty.
@@ -39,7 +38,6 @@ $(function() {
                 expect(feed.url).toBe(thisURL.href);
             });
         });
-
 
         /* 3. Test:
          * It ensures that each allFeeds object has a name defined
@@ -63,10 +61,9 @@ $(function() {
         var body;
         var menuIconLink;
 
-        beforeEach(function(done) {
+        beforeEach(function() {
             body = document.body;
             menuIconLink = document.querySelector('a[class="menu-icon-link"]');
-            done();
         });
 
         /* 1. Test
@@ -83,16 +80,13 @@ $(function() {
           * does the menu display when clicked?
           * does it hide when clicked again?
           */
-        it('toggle visibility when click is triggered', function(done) {
+        it('toggle visibility when click is triggered', function() {
             // does the menu display when clicked?
             menuIconLink.click();
             expect(body.className).not.toContain('menu-hidden');
-            setTimeout(function() {
-                // does it hide when clicked again?
-                menuIconLink.click();
-                expect(body.className).toContain('menu-hidden');
-                done();
-            }, 250);
+            // does it hide when clicked again?
+            menuIconLink.click();
+            expect(body.className).toContain('menu-hidden');
         });
     });
 
@@ -101,15 +95,26 @@ $(function() {
      * the initial feed entries in our application.
      */
     describe('Initial Entries', function() {
+        var container = document.querySelector('.feed');
+
+        // wait till asynchronous function finished
         beforeEach(function(done) {
+            loadFeed(0, function() {
+                done();
+            });
+        });
+
+        /* 1. Test
+         * Ensure that there is at least a single .entry
+         * element within the .feed container when the loadFeed
+         * function is called and completes its work.
+         */
+        it('contains at least one entry', function(done) {
+            var entry = container.querySelector('.entry');
+
+            expect(entry).not.toBe(null);
             done();
         });
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test will require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
-         */
     });
 
     /* 4. Test Suite: New Feed Selection
@@ -117,9 +122,31 @@ $(function() {
      * new feeds in our application.
      */
     describe('New Feed Selection', function() {
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
+        var container = document.querySelector('.feed');
+        var entryLink;
+
+        // wait till asynchronous funciton finished
+        beforeEach(function(done) {
+            // loading first feed
+            loadFeed(0, function() {
+                entryLink = container.querySelector('.entry-link');
+                done();
+            });
+        });
+
+        /* 1. Test
+         * Ensures that the content actually changes
+         * when a new feed is loaded by the loadFeed function.
          */
+        it('changed content', function(done) {
+            // loading second feed
+            loadFeed(1, function() {
+                var newEntryLink = container.querySelector('.entry-link');
+
+                // content changed?
+                expect(entryLink.href).not.toBe(newEntryLink.href);
+                done();
+            });
+        });
     });
 }());
