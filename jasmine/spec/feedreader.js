@@ -70,23 +70,23 @@ $(function() {
          * It ensures the menu element is hidden by default.
          */
         it('is hidden by default', function() {
-            expect(body.className).toContain('menu-hidden');
+            expect(body.classList).toContain('menu-hidden');
         });
 
-         /* 2. Test
-          * It ensures the menu changes visibility
-          * when the menu icon is clicked.
-          * This test have two expectations:
-          * does the menu display when clicked?
-          * does it hide when clicked again?
-          */
+        /* 2. Test
+         * It ensures the menu changes visibility
+         * when the menu icon is clicked.
+         * This test have two expectations:
+         * does the menu display when clicked?
+         * does it hide when clicked again?
+         */
         it('toggle visibility when click is triggered', function() {
             // does the menu display when clicked?
             menuIconLink.click();
-            expect(body.className).not.toContain('menu-hidden');
+            expect(body.classList).not.toContain('menu-hidden');
             // does it hide when clicked again?
             menuIconLink.click();
-            expect(body.className).toContain('menu-hidden');
+            expect(body.classList).toContain('menu-hidden');
         });
     });
 
@@ -99,9 +99,7 @@ $(function() {
 
         // wait till asynchronous function finished
         beforeEach(function(done) {
-            loadFeed(0, function() {
-                done();
-            });
+            loadFeed(0, done);
         });
 
         /* 1. Test
@@ -109,11 +107,10 @@ $(function() {
          * element within the .feed container when the loadFeed
          * function is called and completes its work.
          */
-        it('contains at least one entry', function(done) {
+        it('contains at least one entry', function() {
             var entry = container.querySelector('.entry');
 
             expect(entry).not.toBe(null);
-            done();
         });
     });
 
@@ -123,29 +120,25 @@ $(function() {
      */
     describe('New Feed Selection', function() {
         var container = document.querySelector('.feed');
-        var entryLink;
-
-        // wait till asynchronous funciton finished
-        beforeEach(function(done) {
-            // loading first feed
-            loadFeed(0, function() {
-                entryLink = container.querySelector('.entry-link');
-                done();
-            });
-        });
 
         /* 1. Test
          * Ensures that the content actually changes
          * when a new feed is loaded by the loadFeed function.
          */
         it('changed content', function(done) {
-            // loading second feed
-            loadFeed(1, function() {
-                var newEntryLink = container.querySelector('.entry-link');
+            // loading first feed
+            loadFeed(0, function() {
+                // element of first feed
+                var entryLink = container.querySelector('.entry-link');
+                // loading second feed
+                loadFeed(1, function() {
+                    // element of second feed
+                    var newEntryLink = container.querySelector('.entry-link');
 
-                // content changed?
-                expect(entryLink.href).not.toBe(newEntryLink.href);
-                done();
+                    // content changed?
+                    expect(entryLink.href).not.toBe(newEntryLink.href);
+                    done();
+                });
             });
         });
     });
